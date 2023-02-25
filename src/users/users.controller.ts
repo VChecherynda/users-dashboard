@@ -32,11 +32,11 @@ export class UsersController {
 
   @Put(':id')
   update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+    this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   delete(@Param('id') id: number) {
-    return this.usersService.delete(id);
+    this.usersService.delete(id);
   }
 }
