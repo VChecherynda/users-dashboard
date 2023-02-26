@@ -9,8 +9,10 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UsePipes,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { JoiValidationPipe } from '../pipes/validation-pipe';
+import { CreateUserDto, UpdateUserDto, createUserSchema } from './dto';
 import { User } from './interfaces/user.interface';
 import { UsersService } from './users.service';
 
@@ -19,14 +21,15 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Post()
+  @UsePipes(new JoiValidationPipe(createUserSchema))
   async create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    return await this.usersService.create(createUserDto);
   }
 
   @Get()
   async findAll(): Promise<void | User[]> {
     try {
-      await this.usersService.findAll();
+      return await this.usersService.findAll();
     } catch (error) {
       throw new HttpException(
         {
