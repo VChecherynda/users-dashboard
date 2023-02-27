@@ -9,8 +9,10 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
+import { RoleGuard } from 'src/guards/role.guard';
 import { JoiValidationPipe } from '../pipes/validation-pipe';
 import { CreateUserDto, UpdateUserDto, createUserSchema } from './dto';
 import { User } from './interfaces/user.interface';
@@ -27,6 +29,7 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(RoleGuard)
   async findAll(): Promise<void | User[]> {
     try {
       return await this.usersService.findAll();
