@@ -12,6 +12,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { RoleGuard } from 'src/guards/role.guard';
 import { JoiValidationPipe } from '../pipes/validation-pipe';
 import { CreateUserDto, UpdateUserDto, createUserSchema } from './dto';
@@ -20,7 +21,10 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private configService: ConfigService,
+  ) {}
 
   @Post()
   @UsePipes(new JoiValidationPipe(createUserSchema))
@@ -31,6 +35,8 @@ export class UsersController {
   @Get()
   @UseGuards(RoleGuard)
   async findAll(): Promise<void | User[]> {
+    console.log('[db_user]', this.configService.get<string>('DATABASE_USER'));
+
     try {
       return await this.usersService.findAll();
     } catch (error) {
