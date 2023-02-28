@@ -2,26 +2,31 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { logger } from './middleware/logger.middleware';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
-import { ConfigModule } from '@nestjs/config';
-import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entity/user.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    UsersModule,
-    ConfigModule.forRoot({ load: [configuration] }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'test_database',
-      synchronize: true,
-      logging: false,
-      entities: [User],
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get('DB_HOST'),
+        port: Number(configService.get('DB_PORT')),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE'),
+        synchronize: true,
+        logging: false,
+        entities: [User],
+      }),
     }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    UsersModule,
   ],
 })
 export class AppModule implements NestModule {
