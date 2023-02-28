@@ -12,7 +12,6 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { RoleGuard } from 'src/guards/role.guard';
 import { JoiValidationPipe } from '../pipes/validation-pipe';
 import { CreateUserDto, UpdateUserDto, createUserSchema } from './dto';
@@ -21,10 +20,7 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    private usersService: UsersService,
-    private configService: ConfigService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   @Post()
   @UsePipes(new JoiValidationPipe(createUserSchema))
@@ -35,8 +31,6 @@ export class UsersController {
   @Get()
   @UseGuards(RoleGuard)
   async findAll(): Promise<void | User[]> {
-    console.log('[db_user]', this.configService.get<string>('DATABASE_USER'));
-
     try {
       return await this.usersService.findAll();
     } catch (error) {
@@ -59,18 +53,18 @@ export class UsersController {
       'id',
       new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
     )
-    id: number,
+    id: string,
   ): Promise<User> {
-    return this.usersService.findOne(id);
+    return await this.usersService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number) {
+  delete(@Param('id') id: string) {
     this.usersService.delete(id);
   }
 }

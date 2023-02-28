@@ -17,9 +17,10 @@ import { User } from './users/entity/user.entity';
       port: 3306,
       username: 'root',
       password: 'root',
-      database: 'test',
-      entities: [User],
+      database: 'test_database',
       synchronize: true,
+      logging: false,
+      entities: [User],
     }),
   ],
 })
