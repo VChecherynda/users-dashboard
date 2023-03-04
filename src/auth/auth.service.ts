@@ -6,7 +6,7 @@ export class AuthService {
   constructor(private userService: UsersService) {}
 
   // TO-DO
-  // 1. Use  bcrypt for password
+  // 1. Use bcrypt for password
   // 2. Use email instead of username
   async validateUser(username: string, password: string) {
     const user = await this.userService.findByName(username);
