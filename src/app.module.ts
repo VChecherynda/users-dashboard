@@ -1,5 +1,4 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { logger } from './middleware/logger.middleware';
 import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
@@ -28,13 +27,13 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UsersModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(logger).forRoutes(UsersController);
+    consumer.apply().forRoutes(UsersController);
   }
 }
