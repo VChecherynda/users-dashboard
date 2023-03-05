@@ -4,8 +4,10 @@ import {
   Delete,
   Get,
   HttpStatus,
+  NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
   Put,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto';
@@ -29,11 +31,23 @@ export class UsersController {
     )
     id: string,
   ): Promise<User> {
-    return await this.usersService.findOne(id);
+    const user = await this.usersService.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+
+    return user;
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.usersService.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+
     this.usersService.update(id, updateUserDto);
   }
 

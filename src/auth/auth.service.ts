@@ -19,7 +19,13 @@ export class AuthService {
   }
 
   async signUpUser({ email, password }: CreateUserDto) {
-    await this.userService.create({ email, password });
+    await this.userService.create({
+      name: '',
+      age: 0,
+      location: '',
+      email,
+      password,
+    });
 
     return null;
   }

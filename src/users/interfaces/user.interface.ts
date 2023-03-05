@@ -6,12 +6,7 @@ export interface User {
   password: string;
 }
 
-export interface NewUser {
-  email: string;
-  password: string;
-}
-
-export interface SavedUser {
+export interface UserUpdate {
   name: string;
   age: number;
   location: string;
