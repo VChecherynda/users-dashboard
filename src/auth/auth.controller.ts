@@ -21,7 +21,7 @@ export class AuthController {
       throw new NotFoundException(`User not found`);
     }
 
-    return req.user;
+    return await this.authService.login(req.user);
   }
 
   @Post('signup')
@@ -29,7 +29,6 @@ export class AuthController {
     await this.authService.signUpUser(createUserDto);
   }
 
-  @UseGuards(AuthGuard('local'))
   @Post('reset-password')
   async reset() {
     throw new Error('Reset password not implemented');
