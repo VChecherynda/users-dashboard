@@ -19,8 +19,8 @@ export class UsersService {
     return this.usersRepository.findOneBy({ id });
   }
 
-  findByName(name: string) {
-    return this.usersRepository.findOneBy({ name });
+  findByEmail(email: string) {
+    return this.usersRepository.findOneBy({ email });
   }
 
   async create(user: UserInterface) {

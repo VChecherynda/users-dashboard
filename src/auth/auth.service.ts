@@ -7,9 +7,8 @@ export class AuthService {
 
   // TO-DO
   // 1. Use bcrypt for password
-  // 2. Use email instead of username
-  async validateUser(name: string, password: string) {
-    const user = await this.userService.findByName(name);
+  async validateUser(email: string, password: string) {
+    const user = await this.userService.findByEmail(email);
 
     if (user && user.password === password) {
       const { password, ...result } = user;
