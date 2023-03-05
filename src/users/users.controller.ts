@@ -7,7 +7,6 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
-  Patch,
   Put,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto';
