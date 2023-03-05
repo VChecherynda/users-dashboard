@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entity/user.entity';
-import { User as UserInterface } from './interfaces/user.interface';
+import { SavedUser, NewUser } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
@@ -23,11 +23,11 @@ export class UsersService {
     return this.usersRepository.findOneBy({ email });
   }
 
-  async create(user: UserInterface) {
-    await this.usersRepository.save(user);
+  async create({ email, password }: NewUser) {
+    await this.usersRepository.save({ email, password });
   }
 
-  async update(id: string, user: UserInterface) {
+  async update(id: string, user: SavedUser) {
     await this.usersRepository.update(id, user);
   }
 

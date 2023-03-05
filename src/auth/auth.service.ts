@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from 'src/users/dto';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -11,11 +12,15 @@ export class AuthService {
     const user = await this.userService.findByEmail(email);
 
     if (user && user.password === password) {
-      const { password, ...result } = user;
-
-      return result;
+      return { name: user.name };
     }
 
-    return { name, password };
+    return null;
+  }
+
+  async signUpUser({ email, password }: CreateUserDto) {
+    await this.userService.create({ email, password });
+
+    return null;
   }
 }
