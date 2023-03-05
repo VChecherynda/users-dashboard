@@ -8,7 +8,9 @@ import {
   Param,
   ParseIntPipe,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto';
 import { User } from './interfaces/user.interface';
 import { UsersService } from './users.service';
@@ -17,6 +19,7 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<void | User[]> {
     return await this.usersService.findAll();
