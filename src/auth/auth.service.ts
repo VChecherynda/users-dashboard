@@ -8,10 +8,8 @@ export class AuthService {
   // TO-DO
   // 1. Use bcrypt for password
   // 2. Use email instead of username
-  async validateUser(username: string, password: string) {
-    console.log('[username/password]', username, password);
-
-    const user = await this.userService.findByName(username);
+  async validateUser(name: string, password: string) {
+    const user = await this.userService.findByName(name);
 
     if (user && user.password === password) {
       const { password, ...result } = user;
@@ -19,6 +17,6 @@ export class AuthService {
       return result;
     }
 
-    return { username, password };
+    return { name, password };
   }
 }

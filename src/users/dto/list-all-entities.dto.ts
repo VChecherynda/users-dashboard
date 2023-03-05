@@ -1,5 +1,5 @@
 class UserDto {
-  username: string;
+  name: string;
   age: number;
   location: string;
 }
