@@ -28,6 +28,7 @@ export class UsersController {
       name: user.name,
       age: user.age,
       location: user.location,
+      email: user.email,
     }));
   }
 

@@ -10,6 +10,7 @@ export interface UserSaved {
   name: string;
   age: number;
   location: string;
+  email: string;
 }
 
 export interface UserUpdate {
