@@ -10,12 +10,12 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto';
 
-@Controller()
+@Controller('/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @UseGuards(AuthGuard('local'))
-  @Post('auth/login')
+  @Post('login')
   async login(@Request() req) {
     if (!req.user) {
       throw new NotFoundException(`User not found`);
@@ -24,12 +24,12 @@ export class AuthController {
     return await this.authService.login(req.user);
   }
 
-  @Post('auth/signup')
+  @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto) {
     await this.authService.signUpUser(createUserDto);
   }
 
-  @Post('auth/reset-password')
+  @Post('reset-password')
   async reset() {
     throw new Error('Reset password not implemented');
   }
