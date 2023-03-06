@@ -12,17 +12,23 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto';
-import { User } from './interfaces/user.interface';
+import { UserSaved } from './interfaces/user.interface';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(): Promise<void | User[]> {
-    return await this.usersService.findAll();
+  async findAll(): Promise<void | UserSaved[]> {
+    const users = await this.usersService.findAll();
+
+    return users.map((user) => ({
+      name: user.name,
+      age: user.age,
+      location: user.location,
+    }));
   }
 
   @Get(':id')
@@ -32,7 +38,7 @@ export class UsersController {
       new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
     )
     id: string,
-  ): Promise<User> {
+  ): Promise<UserSaved> {
     const user = await this.usersService.findOne(id);
 
     if (!user) {

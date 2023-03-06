@@ -6,6 +6,12 @@ export interface User {
   password: string;
 }
 
+export interface UserSaved {
+  name: string;
+  age: number;
+  location: string;
+}
+
 export interface UserUpdate {
   name: string;
   age: number;
