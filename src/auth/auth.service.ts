@@ -22,7 +22,7 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (isPasswordValid) {
-      return { name: user.name };
+      return { id: user.id, email: user.email };
     }
 
     //TO-DO proper handle error when password is not valid
