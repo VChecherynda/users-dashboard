@@ -19,7 +19,7 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<void | UserSaved[]> {
     const users = await this.usersService.findAll();
