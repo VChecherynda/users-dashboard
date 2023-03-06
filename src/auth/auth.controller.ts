@@ -4,6 +4,7 @@ import {
   NotFoundException,
   Post,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -26,7 +27,12 @@ export class AuthController {
 
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto) {
-    await this.authService.signUpUser(createUserDto);
+    const user = await this.authService.signUpUser(createUserDto);
+
+    return {
+      email: user.email,
+      message: 'User has been signed up',
+    };
   }
 
   @Post('reset-password')

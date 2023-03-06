@@ -27,14 +27,14 @@ export class UsersService {
   }
 
   async create(user: UserInterface) {
-    await this.usersRepository.save(user);
+    return await this.usersRepository.save(user);
   }
 
   async update(id: string, user: UpdateUserInterface) {
-    await this.usersRepository.update(id, user);
+    return await this.usersRepository.update(id, user);
   }
 
   async delete(id: string) {
-    await this.usersRepository.delete(id);
+    return await this.usersRepository.delete(id);
   }
 }

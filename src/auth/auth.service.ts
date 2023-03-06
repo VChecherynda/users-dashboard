@@ -42,7 +42,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
-    await this.userService.create({
+    const user = await this.userService.create({
       name: '',
       age: 0,
       location: '',
@@ -50,6 +50,6 @@ export class AuthService {
       password: hashedPassword,
     });
 
-    return null;
+    return user;
   }
 }
