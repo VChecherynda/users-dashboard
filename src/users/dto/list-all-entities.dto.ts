@@ -1,4 +1,4 @@
-class UserDto {
+export class UserDto {
   name: string;
   age: number;
   location: string;

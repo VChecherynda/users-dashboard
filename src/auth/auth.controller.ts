@@ -4,14 +4,15 @@ import {
   NotFoundException,
   Post,
   Request,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto';
 
-@Controller('/auth')
+@ApiTags('auth')
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
