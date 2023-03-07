@@ -11,7 +11,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto } from './dto';
+import { CreateUserDto, RegisteredUserDto } from './dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -21,7 +21,9 @@ export class AuthController {
   @UseGuards(AuthGuard('local'))
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  @ApiBody({ type: LoginUserDto })
+  @ApiBody({
+    type: RegisteredUserDto,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Login user and return token',
@@ -34,7 +36,15 @@ export class AuthController {
     return await this.authService.login(req.user);
   }
 
+  @HttpCode(HttpStatus.CREATED)
   @Post('signup')
+  @ApiBody({
+    type: RegisteredUserDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Register new user',
+  })
   async signup(@Body() createUserDto: CreateUserDto) {
     const user = await this.authService.signUpUser(createUserDto);
 
