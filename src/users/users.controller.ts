@@ -10,12 +10,13 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto';
 import { UserSaved } from './interfaces/user.interface';
 import { UsersService } from './users.service';
 
+@ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
 export class UsersController {

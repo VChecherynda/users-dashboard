@@ -13,6 +13,7 @@ async function bootstrap() {
   app.setGlobalPrefix(`api/${API_VERSION}`);
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Api endpoints')
     .setDescription('Here you could find info about endpoints')
     .setVersion(API_VERSION)
