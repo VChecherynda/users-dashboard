@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   NotFoundException,
   Param,
@@ -10,10 +11,11 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SavedUserDto } from 'src/auth/dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { UpdateUserDto } from './dto';
-import { UserSaved } from './interfaces/user.interface';
+import { ListAllEntitesDto, UpdateUserDto } from './dto';
+import { UserSaved, UserUpdate } from './interfaces/user.interface';
 import { UsersService } from './users.service';
 
 @ApiBearerAuth()
@@ -22,7 +24,15 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return list of the users',
+  })
+  @ApiBody({
+    type: ListAllEntitesDto,
+  })
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   @Get()
   async findAll(): Promise<void | UserSaved[]> {
     const users = await this.usersService.findAll();
@@ -36,7 +46,15 @@ export class UsersController {
     }));
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return saved user',
+  })
+  @ApiBody({
+    type: UserSaved,
+  })
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   @Get(':id')
   async findOne(
     @Param(
@@ -60,7 +78,15 @@ export class UsersController {
     };
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Update saved user',
+  })
+  @ApiBody({
+    type: UserUpdate,
+  })
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const user = await this.usersService.findOne(id);
@@ -72,7 +98,12 @@ export class UsersController {
     this.usersService.update(id, updateUserDto);
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Delete saved user',
+  })
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   @Delete(':id')
   delete(@Param('id') id: string) {
     this.usersService.delete(id);
