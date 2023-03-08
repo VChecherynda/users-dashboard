@@ -28,6 +28,7 @@ export class UsersController {
     const users = await this.usersService.findAll();
 
     return users.map((user) => ({
+      id: user.id,
       name: user.name,
       age: user.age,
       location: user.location,
@@ -50,7 +51,13 @@ export class UsersController {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    return user;
+    return {
+      id: user.id,
+      name: user.name,
+      age: user.age,
+      location: user.location,
+      email: user.email,
+    };
   }
 
   @UseGuards(JwtAuthGuard)

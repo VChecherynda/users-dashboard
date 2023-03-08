@@ -7,6 +7,7 @@ export interface User {
 }
 
 export interface UserSaved {
+  id: string;
   name: string;
   age: number;
   location: string;
