@@ -1,17 +1,30 @@
 import * as bcrypt from 'bcrypt';
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '../users/users.service';
+import { MailService } from '../mail/mail.service';
 import { SavedUserDto, CreateUserDto } from './dto';
 
 @Injectable()
 export class AuthService {
+  private readonly clientAppUrl: string;
+
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    private readonly mailService: MailService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async validateUser(email: string, password: string) {
+  private getFrontendUrl() {
+    const HOST = this.configService.get('FRONTENDHOST');
+    const PORT = this.configService.get('FRONTENDPORT');
+
+    return `http://${HOST}:${PORT}`;
+  }
+
+  private async validateUser(email: string, password: string) {
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
@@ -24,16 +37,13 @@ export class AuthService {
       return { id: user.id, email: user.email };
     }
 
-    //TO-DO proper handle error when password is not valid
     return null;
   }
 
   async login(user: SavedUserDto) {
-    const payload = { id: user.id, email: user.email };
+    const access_token = this.jwtService.sign(user);
 
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    return { access_token };
   }
 
   async signUpUser({ email, password }: CreateUserDto) {
@@ -50,5 +60,21 @@ export class AuthService {
     });
 
     return user;
+  }
+
+  async resetPassword(user: SavedUserDto) {
+    const access_token = this.jwtService.sign(user);
+    const fontendUrl = this.getFrontendUrl();
+    const confirmLink = `${fontendUrl}/auth/confirm?token=${access_token}`;
+
+    await this.mailService.send({
+      from: this.configService.get<string>(user.email),
+      to: user.email,
+      subject: 'Verify User',
+      text: `
+          <h3>Hello ${user.email}!</h3>
+          <p>Please use this <a href="${confirmLink}">link</a> to confirm your account.</p>
+      `,
+    });
   }
 }

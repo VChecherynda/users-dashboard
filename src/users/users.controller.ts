@@ -12,7 +12,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SavedUserDto } from 'src/auth/dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ListAllEntitesDto, UpdateUserDto } from './dto';
 import { UserSaved, UserUpdate } from './interfaces/user.interface';
