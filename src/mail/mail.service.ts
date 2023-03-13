@@ -16,7 +16,7 @@ export class MailService {
 
   send(data: MailGunData): Promise<Mailgun.messages.SendResponse> {
     return new Promise((resolve, reject) => {
-      this.mg.message().send(data, function (error, body) {
+      this.mg.messages().send(data, function (error, body) {
         if (error) {
           reject(error);
         }

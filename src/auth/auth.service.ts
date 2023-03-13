@@ -70,7 +70,10 @@ export class AuthService {
       throw new NotFoundException(`User with such email doesnt exist`);
     }
 
-    const access_token = this.jwtService.sign(user);
+    const access_token = this.jwtService.sign({
+      id: user.id,
+      email: user.email,
+    });
     const fontendUrl = this.getFrontendUrl();
     const confirmLink = `${fontendUrl}/auth/confirm?token=${access_token}`;
 
