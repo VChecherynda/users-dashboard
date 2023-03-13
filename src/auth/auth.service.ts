@@ -68,12 +68,12 @@ export class AuthService {
     const confirmLink = `${fontendUrl}/auth/confirm?token=${access_token}`;
 
     await this.mailService.send({
-      from: this.configService.get<string>(user.email),
+      from: this.configService.get<string>('MAINAPPMAIL'),
       to: user.email,
       subject: 'Verify User',
       text: `
           <h3>Hello ${user.email}!</h3>
-          <p>Please use this <a href="${confirmLink}">link</a> to confirm your account.</p>
+          <p>Please use this <a href="${confirmLink}">link</a> to reset your password.</p>
       `,
     });
   }
