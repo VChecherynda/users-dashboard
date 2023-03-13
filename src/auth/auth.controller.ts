@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   NotFoundException,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -11,8 +12,13 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { CreateUserDto, RegisteredUserDto } from './dto';
-import { ForgetUserDto } from './dto/forget-user.dto';
+import {
+  CreateUserDto,
+  RegisteredUserDto,
+  ForgetPasswordDto,
+  ChangePasswordDto,
+} from './dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -56,7 +62,13 @@ export class AuthController {
   }
 
   @Post('forget-password')
-  async resetPassword(@Body() forgetUserDto: ForgetUserDto) {
-    await this.authService.forgetPassword(forgetUserDto);
+  async forgetPassword(@Body() forgetPassworDto: ForgetPasswordDto) {
+    await this.authService.forgetPassword(forgetPassworDto);
+  }
+
+  @Patch('change-password')
+  @UseGuards(JwtAuthGuard)
+  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+    await this.authService.changePassword(changePasswordDto);
   }
 }

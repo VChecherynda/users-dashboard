@@ -26,6 +26,10 @@ export class UsersService {
     return this.usersRepository.findOneBy({ email });
   }
 
+  async updatePassword(id: string, password: string) {
+    return await this.usersRepository.update(id, { password });
+  }
+
   async create(user: UserInterface) {
     return await this.usersRepository.save(user);
   }

@@ -4,8 +4,12 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { MailService } from '../mail/mail.service';
-import { SavedUserDto, CreateUserDto } from './dto';
-import { ForgetUserDto } from './dto/forget-user.dto';
+import {
+  SavedUserDto,
+  CreateUserDto,
+  ForgetPasswordDto,
+  ChangePasswordDto,
+} from './dto';
 
 @Injectable()
 export class AuthService {
@@ -41,6 +45,12 @@ export class AuthService {
     return null;
   }
 
+  async hashPassword(password: string) {
+    const SALT_ROUNDS = 10;
+
+    return await bcrypt.hash(password, SALT_ROUNDS);
+  }
+
   async login(user: SavedUserDto) {
     const access_token = this.jwtService.sign(user);
 
@@ -48,9 +58,7 @@ export class AuthService {
   }
 
   async signUpUser({ email, password }: CreateUserDto) {
-    const SALT_ROUNDS = 10;
-
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    const hashedPassword = await this.hashPassword(password);
 
     const user = await this.userService.create({
       name: '',
@@ -63,7 +71,7 @@ export class AuthService {
     return user;
   }
 
-  async forgetPassword({ email }: ForgetUserDto) {
+  async forgetPassword({ email }: ForgetPasswordDto) {
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
@@ -83,5 +91,11 @@ export class AuthService {
       subject: 'Verify User',
       html: `<p>Please use this <a href="${confirmLink}">link</a> to reset your password.</p>`,
     });
+  }
+
+  async changePassword({ id, password }: ChangePasswordDto) {
+    const hashedPassword = await this.hashPassword(password);
+
+    await this.userService.updatePassword(id, hashedPassword);
   }
 }
