@@ -81,10 +81,7 @@ export class AuthService {
       from: this.configService.get<string>('MAINAPPMAIL'),
       to: user.email,
       subject: 'Verify User',
-      text: `
-          <h3>Hello ${user.email}!</h3>
-          <p>Please use this <a href="${confirmLink}">link</a> to reset your password.</p>
-      `,
+      html: `<p>Please use this <a href="${confirmLink}">link</a> to reset your password.</p>`,
     });
   }
 }
