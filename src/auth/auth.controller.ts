@@ -12,7 +12,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateUserDto, RegisteredUserDto } from './dto';
-import { ResetPasswordrDto } from './dto/reset-password';
+import { ForgetUserDto } from './dto/forget-user.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -55,13 +55,8 @@ export class AuthController {
     };
   }
 
-  @UseGuards(AuthGuard('local'))
-  @Post('reset-password')
-  async resetPassword(@Request() req) {
-    if (!req.user) {
-      throw new NotFoundException(`Email or password is not found`);
-    }
-
-    return await this.authService.resetPassword(req.user);
+  @Post('forget-password')
+  async resetPassword(@Body() forgetUserDto: ForgetUserDto) {
+    await this.authService.forgetPassword(forgetUserDto);
   }
 }

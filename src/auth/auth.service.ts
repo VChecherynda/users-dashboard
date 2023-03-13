@@ -1,10 +1,11 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { MailService } from '../mail/mail.service';
 import { SavedUserDto, CreateUserDto } from './dto';
+import { ForgetUserDto } from './dto/forget-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +25,7 @@ export class AuthService {
     return `http://${HOST}:${PORT}`;
   }
 
-  private async validateUser(email: string, password: string) {
+  async validateUser(email: string, password: string) {
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
@@ -62,7 +63,13 @@ export class AuthService {
     return user;
   }
 
-  async resetPassword(user: SavedUserDto) {
+  async forgetPassword({ email }: ForgetUserDto) {
+    const user = await this.userService.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException(`User with such email doesnt exist`);
+    }
+
     const access_token = this.jwtService.sign(user);
     const fontendUrl = this.getFrontendUrl();
     const confirmLink = `${fontendUrl}/auth/confirm?token=${access_token}`;
