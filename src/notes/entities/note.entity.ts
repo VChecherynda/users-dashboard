@@ -1,10 +1,22 @@
-import { Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Generated,
+  ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
+@Entity()
 export class Note {
-  @Column()
+  @PrimaryColumn()
+  @Generated('uuid')
   id: string;
 
   @Column()
+  @ManyToOne(() => User, (user) => user.id)
   userId: string;
 
   @Column()

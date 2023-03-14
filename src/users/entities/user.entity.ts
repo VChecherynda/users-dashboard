@@ -1,8 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Note } from 'src/notes/entities/note.entity';
+import { Column, Entity, Generated, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
+  @Generated('uuid')
+  @OneToMany(() => Note, (note) => note.userId)
   id: string;
 
   @Column()
