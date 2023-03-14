@@ -1,5 +1,13 @@
 import { Note } from 'src/notes/entities/note.entity';
-import { Column, Entity, Generated, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Generated,
+  OneToMany,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -22,4 +30,10 @@ export class User {
 
   @Column()
   password: string;
+
+  @CreateDateColumn()
+  created: string;
+
+  @UpdateDateColumn()
+  updated: string;
 }
