@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateNoteDto } from './dto/create-note.dto';
-import { UpdateNoteDto } from './dto/update-note.dto';
+import { CreateNoteDto, UpdateNoteDto } from './dto';
 import { Note } from './entities/note.entity';
 
 @Injectable()
@@ -24,8 +23,8 @@ export class NotesService {
     return `This action returns a #${id} note`;
   }
 
-  update(id: number, updateNoteDto: UpdateNoteDto) {
-    return `This action updates a #${id} note`;
+  update(id: string, updateNoteDto: UpdateNoteDto) {
+    return this.notesRepository.update(id, updateNoteDto);
   }
 
   remove(id: number) {

@@ -3,9 +3,11 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
@@ -30,9 +32,15 @@ export class NotesController {
     return this.notesService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
-    return this.notesService.update(+id, updateNoteDto);
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  async update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
+    await this.notesService.update(id, updateNoteDto);
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Note has been updated',
+    };
   }
 
   @Delete(':id')
