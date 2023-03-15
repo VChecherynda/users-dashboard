@@ -11,23 +11,35 @@ export class NotesService {
     private notesRepository: Repository<Note>,
   ) {}
 
-  create(createNoteDto: CreateNoteDto) {
-    return this.notesRepository.save(createNoteDto);
+  async create(createNoteDto: CreateNoteDto) {
+    await this.notesRepository.save(createNoteDto);
   }
 
-  findAll() {
-    return `This action returns all notes`;
+  async findAll() {
+    const notes = await this.notesRepository.find();
+
+    return notes.map((note) => ({
+      id: note.id,
+      title: note.title,
+      description: note.description,
+    }));
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} note`;
+  async findOne(id: string) {
+    const note = await this.notesRepository.findOneBy({ id });
+
+    return {
+      id: note.id,
+      title: note.title,
+      description: note.description,
+    };
   }
 
-  update(id: string, updateNoteDto: UpdateNoteDto) {
-    return this.notesRepository.update(id, updateNoteDto);
+  async update(id: string, updateNoteDto: UpdateNoteDto) {
+    await this.notesRepository.update(id, updateNoteDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} note`;
+  async remove(id: string) {
+    await this.notesRepository.delete(id);
   }
 }
