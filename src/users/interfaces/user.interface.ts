@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class User {
   @ApiProperty()
-  name: string;
+  name?: string;
 
   @ApiProperty()
-  age: number;
+  age?: number;
 
   @ApiProperty()
-  location: string;
+  location?: string;
 
   @ApiProperty()
   email: string;
