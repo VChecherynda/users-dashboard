@@ -33,6 +33,7 @@
     "joi": "^17.8.3",
     "mailgun-js": "^0.22.0",
     "mysql2": "^3.1.2",
+    "nestjs-typeorm-paginate": "^4.0.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",

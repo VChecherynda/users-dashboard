@@ -9,6 +9,7 @@ import {
   Param,
   ParseIntPipe,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -33,10 +34,21 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get()
-  async findAll(): Promise<void | UserSaved[]> {
-    const users = await this.usersService.findAll();
+  async findAll(
+    @Query(
+      'page',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    page: number,
+    @Query(
+      'limit',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    limit: number,
+  ): Promise<void | UserSaved[]> {
+    const users = await this.usersService.findAll({ page, limit });
 
-    return users.map((user) => ({
+    return users.items.map((user) => ({
       id: user.id,
       name: user.name,
       age: user.age,

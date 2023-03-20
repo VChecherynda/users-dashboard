@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  paginate,
+  IPaginationOptions,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import {
   User as UserInterface,
   UserUpdate as UpdateUserInterface,
@@ -10,12 +15,19 @@ import {
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
   ) {}
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAll(options): Promise<Pagination<UserEntity>> {
+    // return this.usersRepository.find();
+
+    const { page, limit } = options;
+
+    return await paginate<UserEntity>(this.usersRepository, {
+      page,
+      limit,
+    });
   }
 
   findOne(id: string) {

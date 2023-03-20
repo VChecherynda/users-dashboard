@@ -3,8 +3,8 @@ import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entities/user.entity';
-import { Note } from './notes/entities/note.entity';
+import { UserEntity } from './users/entities/user.entity';
+import { NoteEntity } from './notes/entities/note.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
@@ -24,7 +24,7 @@ import { NotesModule } from './notes/notes.module';
         database: configService.get('MYSQLDATABASE'),
         synchronize: true,
         logging: false,
-        entities: [User, Note],
+        entities: [UserEntity, NoteEntity],
       }),
     }),
     ConfigModule.forRoot({
