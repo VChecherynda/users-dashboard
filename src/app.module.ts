@@ -3,8 +3,6 @@ import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entities/user.entity';
-import { Note } from './notes/entities/note.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
@@ -22,13 +20,9 @@ import { NotesModule } from './notes/notes.module';
         username: configService.get('MYSQLUSER'),
         password: configService.get('MYSQLPASSWORD'),
         database: configService.get('MYSQLDATABASE'),
-        synchronize: false,
+        synchronize: true,
         logging: false,
-        entities: [User, Note],
-        migrations: ['database/migration/*.ts'],
-        cli: {
-          migrationsDir: 'migration',
-        },
+        entities: ['dist/**/*.entity.js'],
       }),
     }),
     ConfigModule.forRoot({
