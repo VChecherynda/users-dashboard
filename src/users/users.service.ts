@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  paginate,
-  IPaginationOptions,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
-import { UserEntity } from './entities/user.entity';
+import { User } from './entities/user.entity';
 import {
   User as UserInterface,
   UserUpdate as UpdateUserInterface,
@@ -15,34 +11,39 @@ import {
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
-  async findAll(options): Promise<Pagination<UserEntity>> {
-    // return this.usersRepository.find();
-
+  async findAll(options): Promise<Pagination<User>> {
     const { page, limit } = options;
 
-    return await paginate<UserEntity>(this.usersRepository, {
+    return await paginate<User>(this.usersRepository, {
       page,
       limit,
     });
   }
 
-  findOne(id: string) {
-    return this.usersRepository.findOneBy({ id });
+  async findOne(id: string) {
+    return await this.usersRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        notes: true,
+      },
+    });
   }
 
-  findByEmail(email: string) {
-    return this.usersRepository.findOneBy({ email });
+  async findByEmail(email: string) {
+    return await this.usersRepository.findOneBy({ email });
   }
 
   async updatePassword(id: string, password: string) {
     return await this.usersRepository.update(id, { password });
   }
 
-  async create(user: UserInterface) {
+  async save(user: UserInterface) {
     return await this.usersRepository.save(user);
   }
 

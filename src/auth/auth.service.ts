@@ -60,7 +60,7 @@ export class AuthService {
   async signUpUser({ email, password }: CreateUserDto) {
     const hashedPassword = await this.hashPassword(password);
 
-    const user = await this.userService.create({
+    const user = await this.userService.save({
       name: '',
       age: 0,
       location: '',

@@ -1,4 +1,4 @@
-import { NoteEntity } from 'src/notes/entities/note.entity';
+import { Note } from 'src/notes/entities/note.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,10 +10,9 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class UserEntity {
+export class User {
   @PrimaryColumn()
   @Generated('uuid')
-  @OneToMany(() => NoteEntity, (note) => note.userId)
   id: string;
 
   @Column({
@@ -41,4 +40,7 @@ export class UserEntity {
 
   @UpdateDateColumn()
   updated: string;
+
+  @OneToMany(() => Note, (note) => note.user)
+  notes: Note[];
 }

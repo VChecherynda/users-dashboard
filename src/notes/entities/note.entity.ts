@@ -1,4 +1,4 @@
-import { UserEntity } from 'src/users/entities/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,14 +10,10 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class NoteEntity {
+export class Note {
   @PrimaryColumn()
   @Generated('uuid')
   id: string;
-
-  @Column()
-  @ManyToOne(() => UserEntity, (user) => user.id)
-  userId: string;
 
   @Column()
   title: string;
@@ -30,4 +26,7 @@ export class NoteEntity {
 
   @UpdateDateColumn()
   updated: string;
+
+  @ManyToOne(() => User, (user) => user.notes)
+  user: User;
 }
