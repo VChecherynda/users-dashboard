@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { Cache } from 'cache-manager';
 import { Repository } from 'typeorm';
 import { User } from './entity/user.entity';
 import {
@@ -13,15 +14,33 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   async findAll(options): Promise<Pagination<User>> {
     const { page, limit } = options;
 
-    return await paginate<User>(this.usersRepository, {
-      page,
-      limit,
-    });
+    const CACHED_USERS_KEY = `findAllUsers/page=${page}/limit=${limit}`;
+
+    const cachedUsers = await this.cacheManager.get<Pagination<User>>(
+      CACHED_USERS_KEY,
+    );
+
+    console.log('[cachedUsers]', cachedUsers);
+
+    if (cachedUsers === undefined) {
+      const users = await paginate<User>(this.usersRepository, {
+        page,
+        limit,
+      });
+
+      await this.cacheManager.set(CACHED_USERS_KEY, users);
+
+      return users;
+    }
+
+    return cachedUsers;
   }
 
   async findOne(id: string) {

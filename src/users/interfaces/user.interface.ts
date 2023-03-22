@@ -11,6 +11,9 @@ export class User {
   location?: string;
 
   @ApiProperty()
+  language?: string;
+
+  @ApiProperty()
   email: string;
 
   @ApiProperty()

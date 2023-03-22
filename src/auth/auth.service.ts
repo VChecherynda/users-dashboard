@@ -64,6 +64,7 @@ export class AuthService {
       name: '',
       age: 0,
       location: '',
+      language: 'ukranian',
       email,
       password: hashedPassword,
     });

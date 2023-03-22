@@ -53,6 +53,7 @@ export class UsersController {
       name: user.name,
       age: user.age,
       location: user.location,
+      language: user.language,
       email: user.email,
     }));
   }

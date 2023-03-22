@@ -10,6 +10,9 @@ export class CreateUserDto {
   @IsString()
   location: string;
 
+  @IsString()
+  language: string;
+
   @IsEmail()
   @IsNotEmpty()
   email: string;

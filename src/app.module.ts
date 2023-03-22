@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  CacheModule,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
@@ -11,6 +16,9 @@ import { dataSourceOptions } from '../db/data-source';
 
 @Module({
   imports: [
+    CacheModule.register({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot(dataSourceOptions),
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
