@@ -21,6 +21,19 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
+## Migrations
+
+```bash
+# generate migration use entities in project
+$ yarn run migration:generate -- db/migrations/[nameOfmigration]
+
+# run migrations
+$ yarn run migration:run
+
+# revert migrations
+$ yarn run migration:revert
+```
+
 ## Test
 
 ```bash
