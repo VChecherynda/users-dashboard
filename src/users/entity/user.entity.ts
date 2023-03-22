@@ -27,6 +27,9 @@ export class User {
   age: number;
 
   @Column()
+  language: string;
+
+  @Column()
   location: string;
 
   @Column({ unique: true })

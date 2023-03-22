@@ -3,31 +3,16 @@ import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
 import { NotesModule } from './notes/notes.module';
+import { dataSourceOptions } from '../db/data-source';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get('MYSQLHOST'),
-        port: Number(configService.get('MYSQLPORT')),
-        username: configService.get('MYSQLUSER'),
-        password: configService.get('MYSQLPASSWORD'),
-        database: configService.get('MYSQLDATABASE'),
-        synchronize: true,
-        logging: false,
-        entities: ['dist/**/*.entity.js'],
-      }),
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    TypeOrmModule.forRoot(dataSourceOptions),
+    ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     UsersModule,
     MailModule,
