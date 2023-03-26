@@ -9,23 +9,31 @@ import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
 import { NotesModule } from './notes/notes.module';
 import { dataSourceOptions } from '../db/data-source';
-import * as redisStore from 'cache-manager-redis-store';
+import { redisStore } from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
 
 @Module({
   imports: [
-    CacheModule.register<RedisClientOptions>({
+    CacheModule.registerAsync<RedisClientOptions>({
       isGlobal: true,
-      // Some problem with redis types
-      store: redisStore as unknown as CacheStore,
-      socket: {
-        host: 'localhost',
-        port: 6379,
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => {
+        const store = await redisStore({
+          socket: {
+            host: config.get('REDIS_HOST'),
+            port: +config.get('REDIS_PORT'),
+          },
+        });
+
+        return {
+          store: store as unknown as CacheStore,
+          ttl: 60 * 60 * 24 * 7,
+        };
       },
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
