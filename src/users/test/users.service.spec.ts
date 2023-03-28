@@ -55,9 +55,7 @@ describe('UserService', () => {
 
   describe('findAll', () => {
     it('should return list of users with pagination from cache', async () => {
-      mockCacheManager.get.mockImplementation(
-        async () => await Promise.resolve(mockPaginationResponse),
-      );
+      mockCacheManager.get.mockResolvedValue(mockPaginationResponse);
 
       const response = await usersService.findAll({ page: PAGE, limit: LIMIT });
 
@@ -67,9 +65,7 @@ describe('UserService', () => {
     });
 
     it('should return list of users with database and save to cache', async () => {
-      mockCacheManager.get.mockImplementation(
-        async () => await Promise.resolve(null),
-      );
+      mockCacheManager.get.mockResolvedValue(null);
 
       (paginate as jest.Mock).mockResolvedValue(mockPaginationResponse);
 
