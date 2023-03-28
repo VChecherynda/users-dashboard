@@ -66,7 +66,7 @@ describe('UserService', () => {
       expect(response).toEqual(mockPaginationResponse);
     });
 
-    it('should return list of users with pagination from database and cache', async () => {
+    it('should return list of users with database and save to cache', async () => {
       mockCacheManager.get.mockImplementation(
         async () => await Promise.resolve(null),
       );
