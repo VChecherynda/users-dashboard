@@ -68,7 +68,7 @@ describe('UserService', () => {
       expect(response).toEqual(mockPaginationResponse);
     });
 
-    it.only('should return list of users with pagination from database and cache', async () => {
+    it('should return list of users with pagination from database and cache', async () => {
       mockCacheManager.get.mockImplementation(
         async () => await Promise.resolve(null),
       );
@@ -78,10 +78,11 @@ describe('UserService', () => {
       const response = await usersService.findAll({ page: PAGE, limit: LIMIT });
 
       expect(cacheManager.get).toHaveBeenCalledWith(PAGINATION_KEY);
-      // expect(cacheManager.set).toHaveBeenCalledWith(
-      //   PAGINATION_KEY,
-      //   mockPaginationResponse,
-      // );
+      expect(cacheManager.set).toHaveBeenCalledWith(
+        PAGINATION_KEY,
+        mockPaginationResponse,
+        undefined,
+      );
       expect(response).toEqual(mockPaginationResponse);
     });
   });
