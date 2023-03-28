@@ -1,44 +1,88 @@
+import { CacheModule, CacheStore } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
-import { Note } from '../../notes/entity/note.entity';
 import { UsersService } from '../users.service';
+import { mockPaginationResponse, PAGINATION_KEY, LIMIT, PAGE } from './mocks';
+import { paginate } from 'nestjs-typeorm-paginate';
+
+jest.mock('nestjs-typeorm-paginate');
 
 describe('UserService', () => {
-  let service: UsersService;
-  let usersRepository: Repository<User>;
-  let notesRepository: Repository<Note>;
-  let cacheManager: Cache;
+  let usersService: UsersService;
+  let cacheManager: CacheStore;
+  let mockPaginate: jest.Mock;
+
+  const TOTAL = 5;
+  const USERS = new Array(TOTAL).fill(undefined).map(() => new User());
+
+  const mockUserRepository = {
+    createQueryBuilder: jest.fn(() => ({
+      select: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getManyAndCount: jest.fn(() => [USERS, TOTAL]),
+    })),
+  };
+
+  const mockCacheManager = {
+    get: jest.fn(),
+    set: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        CacheModule.register({
+          store: mockCacheManager,
+        }),
+      ],
       providers: [
         UsersService,
         {
           provide: getRepositoryToken(User),
-          useClass: Repository,
+          useValue: mockUserRepository,
         },
         {
-          provide: getRepositoryToken(Note),
-          useClass: Repository,
-        },
-        {
-          provide: 'CACHE_MANAGER',
-          useValue: {
-            // Mock the methods of CacheManager if needed
-          },
+          provide: 'CacheStore',
+          useValue: mockCacheManager,
         },
       ],
     }).compile();
 
-    service = module.get<UsersService>(UsersService);
-    usersRepository = module.get<Repository<User>>(getRepositoryToken(User));
-    notesRepository = module.get<Repository<Note>>(getRepositoryToken(Note));
-    cacheManager = module.get<Cache>('CACHE_MANAGER');
+    usersService = module.get<UsersService>(UsersService);
+    cacheManager = module.get<CacheStore>('CacheStore');
+    mockPaginate = paginate as jest.Mock;
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('findAll', () => {
+    it('should return list of users with pagination from cache', async () => {
+      mockCacheManager.get.mockImplementation(
+        async () => await Promise.resolve(mockPaginationResponse),
+      );
+
+      const response = await usersService.findAll({ page: PAGE, limit: LIMIT });
+
+      expect(cacheManager.get).toHaveBeenCalledWith(PAGINATION_KEY);
+      expect(cacheManager.set).not.toHaveBeenCalled();
+      expect(response).toEqual(mockPaginationResponse);
+    });
+
+    it.only('should return list of users with pagination from database and cache', async () => {
+      mockCacheManager.get.mockImplementation(
+        async () => await Promise.resolve(null),
+      );
+
+      mockPaginate.mockResolvedValue(mockPaginationResponse);
+
+      const response = await usersService.findAll({ page: PAGE, limit: LIMIT });
+
+      expect(cacheManager.get).toHaveBeenCalledWith(PAGINATION_KEY);
+      // expect(cacheManager.set).toHaveBeenCalledWith(
+      //   PAGINATION_KEY,
+      //   mockPaginationResponse,
+      // );
+      expect(response).toEqual(mockPaginationResponse);
+    });
   });
 });
