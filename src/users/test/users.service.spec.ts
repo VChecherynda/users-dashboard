@@ -11,7 +11,6 @@ jest.mock('nestjs-typeorm-paginate');
 describe('UserService', () => {
   let usersService: UsersService;
   let cacheManager: CacheStore;
-  let mockPaginate: jest.Mock;
 
   const TOTAL = 5;
   const USERS = new Array(TOTAL).fill(undefined).map(() => new User());
@@ -52,7 +51,6 @@ describe('UserService', () => {
 
     usersService = module.get<UsersService>(UsersService);
     cacheManager = module.get<CacheStore>('CacheStore');
-    mockPaginate = paginate as jest.Mock;
   });
 
   describe('findAll', () => {
@@ -73,7 +71,7 @@ describe('UserService', () => {
         async () => await Promise.resolve(null),
       );
 
-      mockPaginate.mockResolvedValue(mockPaginationResponse);
+      (paginate as jest.Mock).mockResolvedValue(mockPaginationResponse);
 
       const response = await usersService.findAll({ page: PAGE, limit: LIMIT });
 
