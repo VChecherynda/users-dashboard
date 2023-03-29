@@ -8,6 +8,7 @@ import {
 import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
+import { ChatGateway } from './chat/chatGateaway';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
@@ -43,6 +44,7 @@ import type { RedisClientOptions } from 'redis';
     MailModule,
     NotesModule,
   ],
+  providers: [ChatGateway],
   controllers: [AppController],
 })
 export class AppModule implements NestModule {

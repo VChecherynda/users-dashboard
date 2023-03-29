@@ -3,16 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Generated,
   OneToMany,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryColumn()
-  @Generated('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({
@@ -39,10 +37,10 @@ export class User {
   password: string;
 
   @CreateDateColumn()
-  created: string;
+  created: Date;
 
   @UpdateDateColumn()
-  updated: string;
+  updated: Date;
 
   @OneToMany(() => Note, (note) => note.user)
   notes: Note[];
