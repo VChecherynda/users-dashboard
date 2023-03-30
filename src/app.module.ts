@@ -17,6 +17,7 @@ import { NotesModule } from './notes/notes.module';
 import { dataSourceOptions } from '../db/data-source';
 import { redisStore } from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
+import { Message } from './chat/entity/message.entity';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import type { RedisClientOptions } from 'redis';
       },
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
+    TypeOrmModule.forFeature([Message]),
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     UsersModule,
