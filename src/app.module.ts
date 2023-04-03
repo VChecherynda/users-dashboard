@@ -8,7 +8,6 @@ import {
 import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
-import { ChatGateway } from './chat/chatGateaway';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
@@ -16,8 +15,8 @@ import { MailModule } from './mail/mail.module';
 import { NotesModule } from './notes/notes.module';
 import { dataSourceOptions } from '../db/data-source';
 import { redisStore } from 'cache-manager-redis-store';
+import { MessagesModule } from './messages/messages.module';
 import type { RedisClientOptions } from 'redis';
-import { Message } from './chat/entity/message.entity';
 
 @Module({
   imports: [
@@ -39,14 +38,13 @@ import { Message } from './chat/entity/message.entity';
       },
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
-    TypeOrmModule.forFeature([Message]),
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     UsersModule,
     MailModule,
     NotesModule,
+    MessagesModule,
   ],
-  providers: [ChatGateway],
   controllers: [AppController],
 })
 export class AppModule implements NestModule {

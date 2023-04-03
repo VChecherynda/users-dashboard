@@ -12,10 +12,7 @@ export class Message {
   id: string;
 
   @Column()
-  room: string;
-
-  @Column()
-  sender: string;
+  userName: string;
 
   @Column()
   message: string;
